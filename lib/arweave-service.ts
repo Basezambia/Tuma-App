@@ -12,7 +12,7 @@ const arweave = Arweave.init({
 });
 
 // Load JWK from environment variable (Vercel/serverless compatible)
-const ARWEAVE_OWNER_JWK = import.meta.env.VITE_ARWEAVE_JWK_JSON ? JSON.parse(import.meta.env.VITE_ARWEAVE_JWK_JSON) : null;
+const ARWEAVE_OWNER_JWK = process.env.NEXT_PUBLIC_ARWEAVE_JWK_JSON ? JSON.parse(process.env.NEXT_PUBLIC_ARWEAVE_JWK_JSON) : null;
 
 export interface FileMetadata {
   name: string;

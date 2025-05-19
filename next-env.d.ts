@@ -1,6 +1,5 @@
 /// <reference types="next" />
-/// <reference types="next/types/global" />
+/// <reference types="next/image-types/global" />
 
 // NOTE: This file should not be edited
-// It's automatically generated and will be overwritten
-// when Next.js runs
+// see https://nextjs.org/docs/pages/api-reference/config/typescript for more information.
