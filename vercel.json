@@ -9,45 +9,14 @@
       }
     },
     {
-      "src": "api/createCharge.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/chargeStatus.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/upload.js",
+      "src": "api/*.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/createCharge",
-      "methods": ["GET", "POST", "OPTIONS"],
-      "dest": "/api/createCharge",
-      "headers": {
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-      }
-    },
-    {
-      "src": "/api/chargeStatus",
-      "methods": ["GET", "OPTIONS"],
-      "dest": "/api/chargeStatus",
-      "headers": {
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-      }
-    },
-    {
-      "src": "/api/upload",
-      "methods": ["POST", "OPTIONS"],
-      "dest": "/api/upload",
+      "src": "/api/(.*)",
+      "dest": "/api/$1",
       "headers": {
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Origin": "*",
