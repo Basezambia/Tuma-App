@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu, Moon, Sun, X } from "lucide-react";
+import { useIsMobile } from "../hooks/use-mobile";
 // Wagmi hooks
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { toast } from "sonner";
