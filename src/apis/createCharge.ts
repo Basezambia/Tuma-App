@@ -1,4 +1,19 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// Define types instead of importing from @vercel/node
+type VercelRequest = {
+  query: Record<string, string | string[]>;
+  cookies: Record<string, string>;
+  body: any;
+  method: string;
+  headers: Record<string, string | string[]>;
+};
+
+type VercelResponse = {
+  status: (statusCode: number) => VercelResponse;
+  send: (body: any) => void;
+  json: (jsonBody: any) => void;
+  setHeader: (name: string, value: string) => void;
+  redirect: (statusOrUrl: string | number, url?: string) => VercelResponse;
+};
 
 const COINBASE_COMMERCE_API_KEY = process.env.COINBASE_COMMERCE_API_KEY!;
 const COINBASE_COMMERCE_API_URL = 'https://api.commerce.coinbase.com/charges';

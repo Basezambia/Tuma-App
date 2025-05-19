@@ -217,7 +217,13 @@ const Send = () => {
           metadata: { sender: senderAddress, recipient: recipientAddress, documentId }
         })
       });
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('Error parsing JSON response:', jsonError);
+        throw new Error('Invalid response from server. Please try again.');
+      }
       if (!response.ok) throw new Error(data.error || 'Failed to create charge');
       setChargeId(data.id); // store chargeId for polling
       setPaymentStatus('pending'); // set payment status to pending immediately after charge creation
