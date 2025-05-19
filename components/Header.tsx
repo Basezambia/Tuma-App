@@ -1,26 +1,15 @@
-import { useState, useEffect } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "../hooks/use-mobile";
 import { useAccount } from 'wagmi';
 import { toast } from "sonner";
-import { 
-  Wallet, 
-  ConnectWallet, 
-  WalletDropdown, 
-  WalletDropdownLink, 
-  WalletDropdownFundLink, 
-  WalletDropdownDisconnect 
-} from '@coinbase/onchainkit/wallet';
-import { 
-  Identity, 
-  Avatar, 
-  Name, 
-  Address, 
-  EthBalance 
-} from '@coinbase/onchainkit/identity';
-import { Toggle } from "@/components/ui/toggle";
-import { useTheme } from "@/hooks/use-theme";
+// Import Connect button from OnchainKit
+import { Connect } from '@coinbase/onchainkit';
+// We'll use this simplified component instead of the previous wallet components
+import { Toggle } from "../components/ui/toggle";
+import { useTheme } from "../hooks/use-theme";
 import { base } from 'viem/chains';
 
 const Header = () => {
@@ -29,9 +18,9 @@ const Header = () => {
   const { theme, setTheme } = useTheme();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(window.scrollY);
-  const navigate = useNavigate();
+  const router = useRouter();
+  const { pathname } = router;
   const { isConnected } = useAccount();
-  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,11 +43,11 @@ const Header = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-transform duration-300 ${showHeader ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'} bg-white dark:bg-[#191919]`}
     >
-      <div className={`${location.pathname === '/landing' ? 'bg-transparent border-none shadow-none backdrop-blur-none' : 'backdrop-blur-xl bg-white/40 dark:bg-[#191919] border border-white/20 dark:border-[#232323] shadow-lg'} rounded-xl mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 transition-all duration-300 ${location.pathname !== '/landing' ? 'hover:bg-white/50 dark:hover:bg-[#232323]/90' : ''}`}>
+      <div className={`${pathname === '/landing' ? 'bg-transparent border-none shadow-none backdrop-blur-none' : 'backdrop-blur-xl bg-white/40 dark:bg-[#191919] border border-white/20 dark:border-[#232323] shadow-lg'} rounded-xl mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 transition-all duration-300 ${pathname !== '/landing' ? 'hover:bg-white/50 dark:hover:bg-[#232323]/90' : ''}`}>
         <div className="flex items-center">
-          <NavLink to="/send" className="text-xl font-bold bg-gradient-to-r from-doc-deep-blue to-blue-500 bg-clip-text text-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 rounded transition-colors duration-200">
+          <Link href="/send" className="text-xl font-bold bg-gradient-to-r from-doc-deep-blue to-blue-500 bg-clip-text text-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 rounded transition-colors duration-200">
             TUMA
-          </NavLink>
+          </Link>
         </div>
 
         {isConnected ? (
@@ -73,35 +62,18 @@ const Header = () => {
           ) : (
             <nav className="hidden md:flex items-center space-x-1">
               {[{ name: 'Send', path: '/send' }, { name: 'Documents', path: '/documents' }, { name: 'Profile', path: '/profile' }, { name: 'About', path: '/about' }]
-                .filter(link => link.path !== location.pathname)
+                .filter(link => link.path !== pathname)
                 .map(link => (
-                  <NavLink
+                  <Link
                     key={link.path}
-                    to={link.path}
-                    className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+                    href={link.path}
+                    className={pathname === link.path ? "nav-link active" : "nav-link"}
                   >
                     {link.name}
-                  </NavLink>
+                  </Link>
                 ))}
               <div className="ml-6 z-50">
-                <Wallet>
-                  <ConnectWallet disconnectedLabel="Log In">
-                    <Name />
-                  </ConnectWallet>
-                  <WalletDropdown>
-                    <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
-                      <Avatar />
-                      <Name />
-                      <Address />
-                      <EthBalance />
-                    </Identity>
-                    <WalletDropdownLink icon="wallet" href="https://keys.coinbase.com">
-                      Wallet
-                    </WalletDropdownLink>
-                    <WalletDropdownFundLink />
-                    <WalletDropdownDisconnect />
-                  </WalletDropdown>
-                </Wallet>
+                <Connect />
               </div>
               <div style={{ marginLeft: '1.5rem' }}>
                 <div className="relative group">
@@ -121,9 +93,7 @@ const Header = () => {
             </nav>
           )
         ) : (
-          <ConnectWallet disconnectedLabel="Log In">
-            <Name />
-          </ConnectWallet>
+          <Connect />
         )}
       </div>
 
@@ -132,41 +102,21 @@ const Header = () => {
         <div className="backdrop-blur-xl bg-white/40 dark:bg-[#191919] border border-white/20 dark:border-[#232323] shadow-lg md:hidden mt-2 py-4 px-2 rounded-xl animate-scale-in">
           <nav className="flex flex-col space-y-3">
             {[{ name: 'Send', path: '/send' }, { name: 'Documents', path: '/documents' }, { name: 'Profile', path: '/profile' }, { name: 'About', path: '/about' }]
-              .filter(link => link.path !== location.pathname)
+              .filter(link => link.path !== pathname)
               .map(link => (
-                <NavLink
+                <Link
                   key={link.path}
-                  to={link.path}
-                  className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+                  href={link.path}
+                  className={pathname === link.path ? "nav-link active" : "nav-link"}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
-                </NavLink>
+                </Link>
               ))}
             <div className="pt-2 flex items-center justify-between">
-              {/* Only render Wallet on mobile, with full dropdown and identity */}
-              {isMobile && isConnected && (
-                <Wallet>
-                  <ConnectWallet disconnectedLabel="Log In">
-                    <Name />
-                  </ConnectWallet>
-                  <WalletDropdown>
-                    <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
-                      <Avatar />
-                      <Name />
-                      <Address />
-                      <EthBalance />
-                    </Identity>
-                    <WalletDropdownLink icon="info-circle" href="/about">
-                      About
-                    </WalletDropdownLink>
-                    <WalletDropdownLink icon="wallet" href="https://keys.coinbase.com">
-                      Wallet
-                    </WalletDropdownLink>
-                    <WalletDropdownFundLink />
-                    <WalletDropdownDisconnect />
-                  </WalletDropdown>
-                </Wallet>
+              {/* Render ConnectButton on mobile */}
+              {isMobile && (
+                <Connect />
               )}
               <div className="relative group">
                 <Toggle 
