@@ -1,6 +1,6 @@
 import React from 'react';
 import '@/styles/globals.css';
-import '@coinbase/onchainkit/styles.css';
+import '@/styles/onchainkit.css';
 import type { AppProps } from 'next/app';
 import { Providers } from '../providers';
 
