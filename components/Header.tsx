@@ -2,12 +2,43 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { useIsMobile } from "../hooks/use-mobile";
-import { useAccount } from 'wagmi';
+// Wagmi hooks
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { toast } from "sonner";
 // Import Connect button from OnchainKit
-import { Connect } from '@coinbase/onchainkit';
-// We'll use this simplified component instead of the previous wallet components
+import { coinbaseWallet } from '@wagmi/connectors';
+// Coinbase Wallet Connect Button
+function CoinbaseWalletButton() {
+  const { connect } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { isConnected, address } = useAccount();
+  // Instantiate the connector directly
+  const connector = coinbaseWallet({
+    appName: 'TUMA',
+    // Optionally, add jsonRpcUrl or infuraId if needed for your chain
+  });
+
+  if (isConnected) {
+    return (
+      <button
+        onClick={() => disconnect()}
+        className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+      >
+        Disconnect ({address?.slice(0, 6)}...{address?.slice(-4)})
+      </button>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => connect({ connector })}
+      className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
+    >
+      Connect Coinbase Wallet
+    </button>
+  );
+}
+
 import { Toggle } from "../components/ui/toggle";
 import { useTheme } from "../hooks/use-theme";
 import { base } from 'viem/chains';
@@ -73,7 +104,7 @@ const Header = () => {
                   </Link>
                 ))}
               <div className="ml-6 z-50">
-                <Connect />
+                <CoinbaseWalletButton />
               </div>
               <div style={{ marginLeft: '1.5rem' }}>
                 <div className="relative group">
@@ -93,7 +124,7 @@ const Header = () => {
             </nav>
           )
         ) : (
-          <Connect />
+          <CoinbaseWalletButton />
         )}
       </div>
 
@@ -116,7 +147,7 @@ const Header = () => {
             <div className="pt-2 flex items-center justify-between">
               {/* Render ConnectButton on mobile */}
               {isMobile && (
-                <Connect />
+                <CoinbaseWalletButton />
               )}
               <div className="relative group">
                 <Toggle 
