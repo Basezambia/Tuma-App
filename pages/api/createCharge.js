@@ -1,22 +1,14 @@
-// Enable CORS for all routes
-const allowCors = fn => async (req, res) => {
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
-  
+// Next.js API route handler
+export default async function handler(req, res) {
+  // CORS preflight
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    return res.status(200).end();
   }
-  
-  return await fn(req, res);
-};
 
-const handler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -61,26 +53,24 @@ const handler = async (req, res) => {
     let data;
     try {
       data = await response.json();
-    } catch (jsonErr) {
-      return res.status(500).json({ error: 'Invalid JSON from Coinbase Commerce' });
+    } catch (e) {
+      return res.status(400).json({ error: 'Invalid JSON response from Coinbase' });
     }
 
-    if (response.status === 201 && data && data.data && data.data.id) {
-      // Return only the chargeId as required by OnchainKit
-      return res.status(201).json({ id: data.data.id });
-    } else {
+    if (!response.ok) {
       return res.status(response.status).json({ 
-        error: (data.error && typeof data.error === 'string') ? data.error : JSON.stringify(data),
+        error: data.error || 'Failed to create charge', 
+        details: data 
       });
     }
 
+    // For OnchainKit Checkout, we need to return the chargeId in a specific format
+    if (data && data.data && data.data.id) {
+      return res.status(200).json({ id: data.data.id });
+    }
+    
+    return res.status(200).json(data);
   } catch (error) {
-    console.error('Charge error:', error);
-    return res.status(500).json({ 
-      error: error.message || 'Internal server error' 
-    });
+    return res.status(500).json({ error: error.message });
   }
-};
-
-// Apply CORS to our handler
-export default allowCors(handler);
+}

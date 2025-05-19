@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 240, 245, 255;
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 15, 25;
+  --background-end-rgb: 30, 35, 45;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
+}
+
+.page-transition {
+  transition: background-color 0.3s ease;
+}
+
+/* Custom colors */
+.text-doc-deep-blue {
+  color: #0066cc;
+}
+
+.text-doc-medium-gray {
+  color: #666666;
+}
+
+/* Add any other global styles from your original project here */

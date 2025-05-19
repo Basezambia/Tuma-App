@@ -1,7 +1,8 @@
-
+import React from 'react';
 import { ArrowRight, BarChart2, HardDrive, Send, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import Header from "@/components/Header";
+import Head from "next/head";
 
 const Dashboard = () => {
   return (
@@ -22,7 +23,7 @@ const Dashboard = () => {
             value="42" 
             icon={<HardDrive className="text-blue-500" />} 
             trend="+12% from last week"
-            to="/documents"
+            href="/documents"
           />
           
           <StatCard 
@@ -30,7 +31,7 @@ const Dashboard = () => {
             value="17" 
             icon={<Send className="text-green-500" />} 
             trend="+5% from last week"
-            to="/documents"
+            href="/documents"
           />
           
           <StatCard 
@@ -38,7 +39,7 @@ const Dashboard = () => {
             value="8" 
             icon={<Users className="text-purple-500" />} 
             trend="2 new connections"
-            to="/profile"
+            href="/about"
           />
           
           <StatCard 
@@ -46,7 +47,7 @@ const Dashboard = () => {
             value="High" 
             icon={<BarChart2 className="text-amber-500" />} 
             trend="Active today"
-            to="/profile"
+            href="/about"
           />
         </div>
         
@@ -61,7 +62,7 @@ const Dashboard = () => {
                 <p className="text-doc-medium-gray dark:text-gray-400 mb-6">
                   Quickly send documents to your contacts with end-to-end encryption and delivery confirmation.
                 </p>
-                <Link to="/send" className="inline-flex items-center text-doc-deep-blue dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
+                <Link href="/send" className="inline-flex items-center text-doc-deep-blue dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                   Send now <ArrowRight size={16} className="ml-1" />
                 </Link>
               </div>
@@ -83,7 +84,7 @@ const Dashboard = () => {
                 <p className="text-doc-medium-gray dark:text-gray-400 mb-6">
                   Browse, organize and manage all your sent and received documents in one intuitive interface.
                 </p>
-                <Link to="/documents" className="inline-flex items-center text-doc-deep-blue dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
+                <Link href="/documents" className="inline-flex items-center text-doc-deep-blue dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                   View documents <ArrowRight size={16} className="ml-1" />
                 </Link>
               </div>
